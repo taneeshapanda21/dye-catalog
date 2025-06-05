@@ -68,17 +68,43 @@ let n3_squares = [
   { color: [231, 190, 126], desc: "wool / radish stem" },
   { color: [219, 171, 135], desc: "cotton / radish stem" }
 ];
+let t_squares = [
+  { color:[234, 208, 179], desc: "silk / bark" },
+  { color: [154, 144, 129], desc: "silk / bark + iron" },
+  { color: [228, 199, 161], desc: "wool / bark" },
+  { color: [186, 167, 142], desc: "wool / bark + iron" },
+  { color: [239, 227, 214], desc: "cotton / bark" },
+  { color: [204, 193, 176], desc: "cotton / bark + iron" },
+];
+let t2_squares = [
+  { color:[215, 149, 116], desc: "silk / eucalyptus" },
+  { color: [100, 86, 85 ], desc: "silk / eucalyptus + iron" },
+  { color: [190, 117, 79], desc: "wool / eucalyptus" },
+  { color: [142, 97, 71 ], desc: "wool / eucalyptus + iron" },
+  { color: [227, 192, 169], desc: "cotton / eucalyptus" },
+  { color: [128, 120, 113], desc: "cotton / eucalyptus + iron" },
+];
+let t3_squares = [
+  { color:[233, 213, 186], desc: "silk / oak gall" },
+  { color: [170, 152, 140], desc: "silk / oak gall + iron" },
+  { color: [213, 178, 134], desc: "wool / oak gall" },
+  { color: [150, 130, 114], desc: "wool / oak gall + iron" },
+  { color: [232, 217, 201], desc: "cotton / oak gall" },
+  { color: [183, 177, 170], desc: "cotton / oak gall + iron" },
+];
 
 let lichen;
 let blueb;
 let avo;
 let cd;
+let bark;
 
 function preload(){
   lichen = loadImage('lichen.jpeg');
   blueb = loadImage('blueb.jpeg');
   avo = loadImage('avopit.jpeg');
   cd = loadImage('curly.jpeg');
+  bark = loadImage('bark.jpeg');
 }
 
 function setup() {
@@ -86,10 +112,11 @@ function setup() {
   
   filter = createSelect(); // https://p5js.org/reference/p5/createSelect/
   filter.position(150, 45); //
-  filter.option("lichen");
+  filter.option("tannin");
+  filter.option("non-native");
   filter.option("blueberry");
   filter.option("avocado pits");
-  filter.option("non-native");
+  filter.option("lichen");
   filter.changed(updateSquares);
     updateSquares();
 }
@@ -119,6 +146,12 @@ function updateSquares() {
     currentSquares2 = n2_squares;
     currentSquares3 = n3_squares;
     currentImg = cd
+  }
+  else if (currentCategory === "tannin") {
+    currentSquares = t_squares;
+    currentSquares2 = t2_squares;
+    currentSquares3 = t3_squares;
+    currentImg = bark;
   }
 }
 
