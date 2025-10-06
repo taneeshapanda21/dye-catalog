@@ -1,0 +1,4 @@
+
+https://taneeshapanda21.github.io/dye-catalog/
+
+I made this website to display different combinations of natural dye materials along with their resulting color matches. The RGB color codes on the page are near-perfect matches, captured using a colorimeter (Color Muse) that translates the physical tones of each dye sample into digital values.
