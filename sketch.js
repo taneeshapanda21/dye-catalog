@@ -4,7 +4,11 @@ let currentSquares = [];
 let currentSquares2 = [];
 let currentSquares3 = [];
 let currentCategory = "";
-let spacing = 150;
+let squareSize = 100;
+let squarePadding = 30;
+let imageSize = 100;
+let titleY = 50;
+let itemSpacing = 140;
 
 let l_squares = [
   { color: [204, 167, 164], desc: "wool" },
@@ -19,7 +23,7 @@ let b_squares = [
   { color: [205,145,166], desc: "silk + lemon" },
   { color: [228,205,192], desc: "wool + lemon" },
   { color: [208,154,182], desc: "cotton + lemon" }
-  ];
+];
 let b2_squares = [
   { color: [219,193,143], desc: "silk + baking soda" },
   { color: [218,210,161], desc: "wool + baking soda" },
@@ -49,8 +53,8 @@ let n_squares = [
   { color: [246, 224, 204], desc: "silk / curly dock + acid" },
   { color: [244, 226, 187], desc: "wool / curly dock root" },
   { color: [248, 233, 195], desc: "wool / curly dock + acid" },
-  { color: [239, 229, 201], desc: "cotton / curly dock root"},
-  { color: [239, 232, 214], desc: "cotton / curly dock + acid"}
+  { color: [239, 229, 201], desc: "cotton / curly dock root" },
+  { color: [239, 232, 214], desc: "cotton / curly dock + acid" }
 ];
 let n2_squares = [
   { color: [228, 205, 92],  desc: "silk / fresh seed" },
@@ -74,7 +78,7 @@ let t_squares = [
   { color: [228, 199, 161], desc: "wool / bark" },
   { color: [186, 167, 142], desc: "wool / bark + iron" },
   { color: [239, 227, 214], desc: "cotton / bark" },
-  { color: [204, 193, 176], desc: "cotton / bark + iron" },
+  { color: [204, 193, 176], desc: "cotton / bark + iron" }
 ];
 let t2_squares = [
   { color:[215, 149, 116], desc: "silk / eucalyptus" },
@@ -82,7 +86,7 @@ let t2_squares = [
   { color: [190, 117, 79], desc: "wool / eucalyptus" },
   { color: [142, 97, 71 ], desc: "wool / eucalyptus + iron" },
   { color: [227, 192, 169], desc: "cotton / eucalyptus" },
-  { color: [128, 120, 113], desc: "cotton / eucalyptus + iron" },
+  { color: [128, 120, 113], desc: "cotton / eucalyptus + iron" }
 ];
 let t3_squares = [
   { color:[233, 213, 186], desc: "silk / oak gall" },
@@ -90,7 +94,7 @@ let t3_squares = [
   { color: [213, 178, 134], desc: "wool / oak gall" },
   { color: [150, 130, 114], desc: "wool / oak gall + iron" },
   { color: [232, 217, 201], desc: "cotton / oak gall" },
-  { color: [183, 177, 170], desc: "cotton / oak gall + iron" },
+  { color: [183, 177, 170], desc: "cotton / oak gall + iron" }
 ];
 
 let lichen;
@@ -99,29 +103,45 @@ let avo;
 let cd;
 let bark;
 
-function preload(){
-  lichen = loadImage('lichen.jpeg');
-  blueb = loadImage('blueb.jpeg');
-  avo = loadImage('avopit.jpeg');
-  cd = loadImage('curly.jpeg');
-  bark = loadImage('bark.jpeg');
+function preload() {
+  lichen = loadImage('assets/lichen.jpeg');
+  blueb = loadImage('assets/blueb.jpeg');
+  avo = loadImage('assets/avopit.jpeg');
+  cd = loadImage('assets/curly.jpeg');
+  bark = loadImage('assets/bark.jpeg');
 }
 
 function setup() {
-  createCanvas(windowWidth,windowHeight);
-  
-  filter = createSelect(); // https://p5js.org/reference/p5/createSelect/
-  filter.position(150, 45); //
+  createCanvas(windowWidth, windowHeight);
+
+  filter = createSelect();
   filter.option("tannin");
   filter.option("non-native");
   filter.option("blueberry");
   filter.option("avocado pits");
   filter.option("lichen");
   filter.changed(updateSquares);
-    updateSquares();
+
+  updateLayout();
+  updateSquares();
 }
 
 let currentImg;
+
+function updateLayout() {
+  squareSize = constrain(floor(min(120, width / 6, height / 7)), 60, 120);
+  squarePadding = squareSize * 0.25;
+  itemSpacing = squareSize + squarePadding;
+  imageSize = constrain(floor(min(140, width * 0.2, height * 0.2)), 80, 140);
+  titleY = max(40, floor(height * 0.06));
+
+  filter.position(20, titleY + 15);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  updateLayout();
+}
 
 function updateSquares() {
   currentCategory = filter.value();
@@ -145,9 +165,8 @@ function updateSquares() {
     currentSquares = n_squares;
     currentSquares2 = n2_squares;
     currentSquares3 = n3_squares;
-    currentImg = cd
-  }
-  else if (currentCategory === "tannin") {
+    currentImg = cd;
+  } else if (currentCategory === "tannin") {
     currentSquares = t_squares;
     currentSquares2 = t2_squares;
     currentSquares3 = t3_squares;
@@ -156,82 +175,67 @@ function updateSquares() {
 }
 
 function draw() {
-  background('#fff')
-  fill('black')
+  background('#fff');
+  fill('black');
   textFont("Karla");
-  textSize(20);
+  textSize(min(28, max(18, width * 0.03)));
   textAlign(LEFT);
-  text("Filter by dye:", 20, 60)
-  
+  text("Filter by dye:", 20, titleY);
+
   if (currentImg) {
-    image(currentImg, 300, 15, 100, 100);
+    let imgX = width - imageSize - 20;
+    let imgY = titleY - 20;
+
+    if (width < 600) {
+      imgX = 20;
+      imgY = titleY + 40;
+    }
+    image(currentImg, imgX, imgY, imageSize, imageSize);
   }
-  
-  // currentSquares
-  let y = height / 2 - 400;
-  let totalWidth = currentSquares.length * spacing;
+
+  let contentY = titleY + imageSize + 40;
+  if (width >= 600) {
+    contentY = titleY + 80;
+  }
+
+  if (currentSquares.length) {
+    contentY = drawSquareGrid(currentSquares, contentY);
+  }
+  if (currentSquares2.length) {
+    contentY = drawSquareGrid(currentSquares2, contentY + 20);
+  }
+  if (currentSquares3.length) {
+    contentY = drawSquareGrid(currentSquares3, contentY + 20);
+  }
+}
+
+function drawSquareGrid(items, startY) {
+  let maxColumns = max(1, floor((width - 40) / itemSpacing));
+  let columns = min(items.length, maxColumns);
+  let totalWidth = columns * itemSpacing;
   let startX = width / 2 - totalWidth / 2;
+  let rows = ceil(items.length / columns);
 
-  for (let i = 0; i < currentSquares.length; i++) {
-    let x = startX + i * spacing;
+  for (let i = 0; i < items.length; i++) {
+    let col = i % columns;
+    let row = floor(i / columns);
+    let x = startX + col * itemSpacing;
+    let y = startY + row * itemSpacing;
 
-    fill(...currentSquares[i].color);
+    fill(...items[i].color);
     noStroke();
-    rect(x, y, 100, 100, 15);
+    rect(x, y, squareSize, squareSize, 15);
 
-    // Show description on hover
     if (
-      mouseX > x && mouseX < x + 100 &&
-      mouseY > y && mouseY < y + 100
+      mouseX > x && mouseX < x + squareSize &&
+      mouseY > y && mouseY < y + squareSize
     ) {
       fill(30);
       textAlign(CENTER);
-      textSize(14);
-      text(currentSquares[i].desc, x + 50, y + 125);
+      textSize(min(16, squareSize * 0.18));
+      text(items[i].desc, x + squareSize / 2, y + squareSize + 20);
     }
   }
-  
-  // currentSquares2
-  let y2 = height / 2 - 250;
-  let totalWidth2 = currentSquares2.length * spacing;
-  let startX2 = width / 2 - totalWidth2 / 2;
 
-  for (let i = 0; i < currentSquares2.length; i++) {
-    let x = startX2 + i * spacing;
-
-    fill(...currentSquares2[i].color);
-    noStroke();
-    rect(x, y2, 100, 100, 15);
-
-    if (
-      mouseX > x && mouseX < x + 100 &&
-      mouseY > y2 && mouseY < y2 + 100
-    ) {
-      fill(30);
-      textAlign(CENTER);
-      textSize(14);
-      text(currentSquares2[i].desc, x + 50, y2 + 125);
-    } }
-  
-  // currentSquares3
-  let y3 = height / 2 - 100;
-  let totalWidth3 = currentSquares3.length * spacing;
-  let startX3 = width / 2 - totalWidth3 / 2;
-
-  for (let i = 0; i < currentSquares3.length; i++) {
-    let x = startX3 + i * spacing;
-
-    fill(...currentSquares3[i].color);
-    noStroke();
-    rect(x, y3, 100, 100, 15);
-
-    if (
-      mouseX > x && mouseX < x + 100 &&
-      mouseY > y3 && mouseY < y3 + 100
-    ) {
-      fill(30);
-      textAlign(CENTER);
-      textSize(14);
-      text(currentSquares3[i].desc, x + 50, y3 + 125);
-    } }
+  return startY + rows * itemSpacing;
 }
